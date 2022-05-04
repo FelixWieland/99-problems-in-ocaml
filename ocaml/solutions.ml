@@ -62,8 +62,41 @@ type 'a node =
 
 let flatten lst =
   let rec consumer target = function 
-  | [] -> target
-  | (One h)::t -> consumer (h::target) t
-  | (Many h)::t -> consumer (consumer target h) t
+    | [] -> target
+    | (One h)::t -> consumer (h::target) t
+    | (Many h)::t -> consumer (consumer target h) t
   in
   rev (consumer [] lst)
+
+(* problem 7 *)
+
+(* my solution *)
+let compress = function
+  | [] -> []
+  | h::t -> 
+    let rec consumer curr tar = function
+      | [] -> curr::tar
+      | h::t when h = curr -> consumer h tar t
+      | h::t -> consumer h (curr::tar) t 
+    in consumer h [] t
+ 
+(* example solution *)
+let rec compress2 = function
+    | a :: (b :: _ as t) -> if a = b then compress t else a :: compress t
+    | smaller -> smaller
+
+(* problem 8 *)
+let pack lst = 
+  let rec traverse lst curr tar =
+    match [lst, curr] with
+    | [lst_h::lst_t, curr_h::curr_t] when lst_h = curr_h -> 
+      traverse lst_t (lst_h::curr_h::curr_t) tar 
+    | [lst_h::lst_t, curr_h::curr_t] -> 
+      traverse lst_t [lst_h] ((curr_h::curr_t)::tar)
+    | [lst_h::lst_t, []] -> 
+      traverse lst_t [lst_h] tar
+    | [_, []] -> tar
+    | _ -> (curr::tar)
+  in
+  traverse lst [] []
+
