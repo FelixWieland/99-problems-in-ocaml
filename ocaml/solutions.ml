@@ -100,3 +100,31 @@ let pack lst =
   in
   traverse lst [] []
 
+(* problem 9 *)
+
+let encode lst: 'a list = 
+  let rec traverse res = function
+    | [] -> res
+    | (h::t) ->
+      match res with
+      | (amount, v)::rt when v = h -> traverse ((amount + 1, v)::rt) t
+      | res -> traverse ((1, h)::res) t
+  in
+  traverse [] lst
+
+(* problem 10 *)
+type 'a rle =
+  | One of 'a
+  | Many of int * 'a
+
+  let encode lst: 'a list = 
+    let rec traverse res = function
+      | [] -> res
+      | (h::t) ->
+        match res with
+        | Many (amount, v)::rt when v = h -> traverse ((Many (amount + 1, v))::rt) t
+        | Many (amount, v)::rt when amount = 1 -> traverse ((Many (1, h))::(One v)::rt) t
+        | res -> traverse (Many (1, h)::res) t
+    in
+    traverse [] lst
+
