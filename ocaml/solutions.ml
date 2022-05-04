@@ -117,14 +117,56 @@ type 'a rle =
   | One of 'a
   | Many of int * 'a
 
-  let encode lst: 'a list = 
-    let rec traverse res = function
-      | [] -> res
-      | (h::t) ->
-        match res with
-        | Many (amount, v)::rt when v = h -> traverse ((Many (amount + 1, v))::rt) t
-        | Many (amount, v)::rt when amount = 1 -> traverse ((Many (1, h))::(One v)::rt) t
-        | res -> traverse (Many (1, h)::res) t
-    in
-    traverse [] lst
+let encode lst: 'a list = 
+  let rec traverse res = function
+    | [] -> res
+    | (h::t) ->
+      match res with
+      | Many (amount, v)::rt when v = h -> traverse ((Many (amount + 1, v))::rt) t
+      | Many (amount, v)::rt when amount = 1 -> traverse ((Many (1, h))::(One v)::rt) t
+      | res -> traverse (Many (1, h)::res) t
+  in
+  traverse [] lst
 
+(* problem 11 *)
+let decode lst =
+  let rec traverse res = function
+    | [] ->  res
+    | ((One elm)::t) -> traverse (elm::res) t
+    | ((Many (1, elm))::t) -> traverse (elm::res) t
+    | ((Many (amount, elm)::t)) -> traverse (elm::res) ((Many (amount - 1, elm))::t)
+  in
+  traverse [] lst
+
+(* problem 12 *)
+(* direct solution *)
+let encode lst: 'a list = 
+  let rec traverse res = function
+    | [] -> res
+    | (h::t) ->
+      match res with
+      | Many (amount, v)::rt when v = h -> traverse ((Many (amount + 1, v))::rt) t
+      | Many (amount, v)::rt when amount = 1 -> traverse ((Many (1, h))::(One v)::rt) t
+      | res -> traverse (Many (1, h)::res) t
+  in
+  traverse [] lst
+
+(* problem 13 *)
+let duplicate lst = 
+  let rec dup tar = function
+    | [] -> tar
+    | (h::t) -> dup (h::h::tar) t
+  in
+  dup [] lst
+
+(* problem 14 *)
+let replicate lst times = 
+  let rec prepend x lst = function
+    | 0 -> lst
+    | n -> prepend x (x::lst) (n - 1)
+  in
+  let rec rep tar = function
+    | [] -> tar
+    | (h::t) -> rep (prepend h tar times) t
+  in
+  rep [] lst
