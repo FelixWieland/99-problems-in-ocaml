@@ -170,3 +170,52 @@ let replicate lst times =
     | (h::t) -> rep (prepend h tar times) t
   in
   rep [] lst
+
+(* problem 15 *)
+let drop lst nth = 
+  let rec traverse tar c = function
+    | [] -> tar
+    | h::t when c = 0 -> traverse tar nth t
+    | h::t -> traverse (h::tar) (c - 1) t
+  in
+  traverse [] nth lst
+
+(* solution without tar *)
+
+let drop2 lst nth = 
+  let rec traverse c = function
+    | [] -> []
+    | h::t -> if c = 1 then traverse nth t else h::traverse (c - 1) t
+  in
+  traverse nth lst
+
+(* problem 16 *)
+let split lst l =
+  let rec split_count left_part right_part l = function
+    | [] -> (rev left_part, rev right_part)
+    | h::t when l = 0 -> split_count left_part (h::right_part) l t
+    | h::t -> split_count (h::left_part) right_part (l-1) t
+  in
+  split_count [] [] l lst
+
+(* problem 17 *)
+let rec slice lst a b = 
+  match lst with
+  | [] -> []
+  | h::t when b = -1 -> [] 
+  | h::t -> if a = 0 then h::slice t a (b-1) else slice t (a-1) (b-1)
+
+(* problem 18 *)
+let rotate lst n =
+  let len = length lst in
+  let first_n = slice lst 0 (n-1) in
+  let last_n = slice lst n (len - 1) in
+  match (last_n::[first_n]) with
+  | [] -> []
+  | h::(ih::_) -> let rec append_to = function
+                    | [] -> ih
+                    | h::t -> h::append_to t
+                  in append_to h
+  | h::t -> h
+
+  
