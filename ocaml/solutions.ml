@@ -218,4 +218,20 @@ let rotate lst n =
                   in append_to h
   | h::t -> h
 
-  
+(* problem 19 *)
+let remove_at pos lst =
+  let rec remove_at_c pos c = function
+    | [] -> []
+    | h::t -> if pos = c then t else h::remove_at_c pos (c+1) t
+  in
+  remove_at_c pos 0 lst
+
+(* example solution *)
+let rec remove_at n = function
+    | [] -> []
+    | h :: t -> if n = 0 then t else h :: remove_at (n - 1) t
+
+(* problem 20 *)
+let rec insert_at v n = function
+  | [] -> []
+  | h::t -> if n = 0 then (v::(h::t)) else h::(insert_at v (n -1) t)
