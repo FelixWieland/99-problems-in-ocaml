@@ -235,3 +235,31 @@ let rec remove_at n = function
 let rec insert_at v n = function
   | [] -> []
   | h::t -> if n = 0 then (v::(h::t)) else h::(insert_at v (n -1) t)
+
+(* problem 21 *)
+let rec range n m = 
+  match n with
+  | n when n = m -> [n]
+  | n -> n::range (n+1) m
+
+(* problem 22 *)
+let rand_select lst n = 
+  let () = Random.init n in
+  let len = length lst in
+  let rec pick lst = function
+    | 0 -> []
+    | n ->
+      match at (Random.int len) lst with
+      | Some x -> x::pick lst (n-1)
+      | _ -> pick lst n
+  in 
+  pick lst n
+
+(* problem 23 *)
+let rec lotto_select times inclusive = 
+  match times with
+  | 0 -> []
+  | n -> (Random.int (inclusive + 1)) + 1::lotto_select (n-1) inclusive
+
+(* problem 24 *)
+let rec permutation lst = None
