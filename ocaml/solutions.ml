@@ -262,4 +262,26 @@ let rec lotto_select times inclusive =
   | n -> (Random.int (inclusive + 1)) + 1::lotto_select (n-1) inclusive
 
 (* problem 24 *)
-let rec permutation lst = None
+let permutation lst =
+  let rec take_n_and_remove n = function
+    | [] -> ([], None)
+    | h::t -> 
+      if n = 0 
+      then (t, Some h) 
+      else 
+        let (t, x) = take_n_and_remove (n-1) t in
+        (h::t, x)
+  in
+  let rec shuffle lst len =  
+    if len = 0 then
+      []
+    else
+      let nlst, n = take_n_and_remove (Random.int len) lst in
+      match n with
+      | Some e -> e::(shuffle nlst (len-1))
+      | None -> []
+  in
+  shuffle lst (length lst)
+
+(* note: the @ operator concats two lists *)
+
