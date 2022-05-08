@@ -285,3 +285,30 @@ let permutation lst =
 
 (* note: the @ operator concats two lists *)
 
+(* problem 25 *)
+let rec extract n lst =
+  let rec map_with_rest fn = function
+    | [] -> []
+    | h::t -> (fn h t)::map_with_rest fn t
+  in 
+  let rec take_n n = function
+  | [] -> []
+  | h::t -> if n = 0 then [] else h::(take_n (n-1) t)
+  in
+  let rec chunks init size curr curr_lst = function
+  | [] -> if curr = size then [curr_lst] else  if (length init) < (n-1) then [] else [curr_lst @ take_n (size - curr) init]
+  | h::t -> if curr = size then curr_lst::(chunks init size 1 [h] t) else chunks init size (curr+1) (h::curr_lst) t
+  in
+  if n = 1 
+    then List.map (fun a -> [a]) lst 
+    else List.flatten (map_with_rest (fun e tail -> List.map (fun a -> e::a) (chunks tail (n-1) 0 [] tail)) lst)
+
+(* example solution *)
+let rec extract k list =
+  if k <= 0 then [[]]
+  else match list with
+       | [] -> []
+       | h :: tl ->
+          let with_h = List.map (fun l -> h :: l) (extract (k - 1) tl) in
+          let without_h = extract k tl in
+          with_h @ without_h
